@@ -48,7 +48,8 @@ class WxEncryption
 		}
 		//随机串处理
 		if ($nonce === '') {
-			$nonce = $this->getRandomStr();
+			$nonce = new RandowStr();
+			$nonce = $nonce->getRandomStr();
 		}
 		//生成安全签名
 		$signature = $this->getSHA1($this->token, $timeStamp, $nonce, $encrypt);
@@ -83,7 +84,8 @@ class WxEncryption
 		}
 		//随机串处理
 		if ($nonce === '') {
-			$nonce = $this->getRandomStr();
+			$nonce = new RandowStr();
+			$nonce = $nonce->getRandomStr();
 		}
 		//验证安全签名
 		$signature = $this->getSHA1($this->token, $timestamp, $nonce, $postData);
