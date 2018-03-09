@@ -1,0 +1,12 @@
+{
+    "name": "junxue/wxencryption",
+    "description": "use for weixin encryption",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "wxencrypt\\": "src/"
+        }
+    }
+}
