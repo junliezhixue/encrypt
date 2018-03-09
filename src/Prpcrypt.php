@@ -15,7 +15,7 @@ class Prpcrypt
 
 	function __construct($k)
 	{
-		$this->$key = base64_decode($k . "=");
+		$this->key = base64_decode($k . "=");
 	}
 
 	/**
@@ -25,7 +25,7 @@ class Prpcrypt
 	 */
 	private function encode($text)
 	{
-		$block_size = $this->$block_size;
+		$block_size = $this->block_size;
 		$text_length = strlen($text);
 		//计算需要填充的位数
 		$amount_to_pad = self::$block_size - ($text_length % self::$block_size);
@@ -71,14 +71,14 @@ class Prpcrypt
 
 			//使用自定义的填充方式对明文进行补位填充
 			$text = $this->encode($text);
-			$iv = substr($this->$key, 0, 16);
+			$iv = substr($this->key, 0, 16);
 
 			if ($cryptMode == 'openssl') {
-                $encrypted = openssl_encrypt($text, 'aes-256-cbc', $this->$key, OPENSSL_RAW_DATA, $iv);
+                $encrypted = openssl_encrypt($text, 'aes-256-cbc', $this->key, OPENSSL_RAW_DATA, $iv);
             } else {
                 $module = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
                 //使用自定义的填充方式对明文进行补位填充
-                mcrypt_generic_init($module, $this->$key, $iv);
+                mcrypt_generic_init($module, $this->key, $iv);
                 //加密
                 $encrypted = mcrypt_generic($module, $text);
                 mcrypt_generic_deinit($module);
@@ -103,13 +103,13 @@ class Prpcrypt
 		try {
 			//使用BASE64对需要解密的字符串进行解码
 			$ciphertext_dec = base64_decode($encrypted);
-			$iv = substr($this->$key, 0, 16);
+			$iv = substr($this->key, 0, 16);
 			//解密
             if ($cryptMode == 'openssl') {
-                $decrypted = openssl_decrypt($ciphertext_dec, 'aes-256-cbc', $this->$key, OPENSSL_RAW_DATA, $iv);
+                $decrypted = openssl_decrypt($ciphertext_dec, 'aes-256-cbc', $this->key, OPENSSL_RAW_DATA, $iv);
             } else {
                 $module = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
-                mcrypt_generic_init($module, $this->$key, $iv);
+                mcrypt_generic_init($module, $this->key, $iv);
                 $decrypted = mdecrypt_generic($module, $ciphertext_dec);
                 mcrypt_generic_deinit($module);
                 mcrypt_module_close($module);

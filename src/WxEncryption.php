@@ -23,9 +23,9 @@ class WxEncryption
 	 */
 	public function __construct($appId, $token, $encodingAesKey)
 	{
-		$this->$appId = $appId;
-		$this->$token = $token;
-		$this->$encodingAesKey = $encodingAesKey;
+		$this->appId = $appId;
+		$this->token = $token;
+		$this->encodingAesKey = $encodingAesKey;
 	}
 
 	/**
@@ -39,9 +39,9 @@ class WxEncryption
 	 */
 	public function encryptMsg($replyMsg, $timeStamp='', $nonce='', $cryptMode='openssl')
 	{
-		$pc = new Prpcrypt($this->$encodingAesKey);
+		$pc = new Prpcrypt($this->encodingAesKey);
 		//加密
-		$encrypt = $pc->encrypt($replyMsg, $this->$appId, $cryptMode);;
+		$encrypt = $pc->encrypt($replyMsg, $this->appId, $cryptMode);;
 		//时间戳处理
 		if ($timeStamp === '') {
 			$timeStamp = time();
@@ -51,7 +51,7 @@ class WxEncryption
 			$nonce = $this->getRandomStr();
 		}
 		//生成安全签名
-		$signature = $this->getSHA1($this->$token, $timeStamp, $nonce, $encrypt);
+		$signature = $this->getSHA1($this->token, $timeStamp, $nonce, $encrypt);
 		return array(
 			"signature" => $signature,
             "encrypt"   => $encrypt,
@@ -74,7 +74,7 @@ class WxEncryption
 	public function decryptMsg($msgSignature, $postData, $timestamp='', $nonce='', $cryptMode='openssl')
 	{
 		//验证非法
-		if (strlen($this->$encodingAesKey) != 43) {
+		if (strlen($this->encodingAesKey) != 43) {
 			throw new WxencryptException(ErrorCode::$IllegalAesKey);
 		}
 		//时间戳处理
@@ -86,13 +86,13 @@ class WxEncryption
 			$nonce = $this->getRandomStr();
 		}
 		//验证安全签名
-		$signature = $this->getSHA1($this->$token, $timestamp, $nonce, $postData);
+		$signature = $this->getSHA1($this->token, $timestamp, $nonce, $postData);
 		if ($signature != $msgSignature) {
 			throw new WxencryptException(ErrorCode::$ValidateSignatureError);
 		}
 		//解密
-		$pc = new Prpcrypt($this->$encodingAesKey);
-		return $pc->decrypt($postData, $this->$appId, $cryptMode);
+		$pc = new Prpcrypt($this->encodingAesKey);
+		return $pc->decrypt($postData, $this->appId, $cryptMode);
 	}
 
 	/**
