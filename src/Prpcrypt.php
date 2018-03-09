@@ -66,7 +66,8 @@ class Prpcrypt
 
 		try {
 			//获得16位随机字符串，填充到明文之前
-			$random = $this->getRandomStr();
+			$random = new RandowStr();
+			$random = $random->getRandomStr();
 			$text = $random . pack("N", strlen($text)) . $text . $appid;
 
 			//使用自定义的填充方式对明文进行补位填充
