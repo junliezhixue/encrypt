@@ -113,6 +113,7 @@ class WxEncryption
 		} catch (Exception $e) {
 			throw new WxencryptException(ErrorCode::$ComputeSignatureError);
 		}
+
 	}
 }
 
